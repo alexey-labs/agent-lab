@@ -3,6 +3,9 @@ export function getEnv(key: string) {
 }
 
 export function getEnvOrFail(key: string) {
-  if (!process.env[key]) throw new Error(`Missing ENV var: ${key}`);
-  return process.env[key];
+  const value = getEnv(key)
+  if (!value || value.trim().length === 0) {
+    throw new Error(`Missing ENV var: ${key}`);
+  }
+  return value
 }
