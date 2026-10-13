@@ -1,4 +1,3 @@
-
 {
   "extends": "@tsconfig/node24/tsconfig.json",
   "compilerOptions": {
@@ -13,22 +12,27 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitOverride": true,
     "noErrorTruncation": true,
-    "declaration": true,        // Automatically generates .d.ts files
-    "declarationMap": true,     // Maps errors/definitions back to source .ts files
-    "incremental": true         // Speeds up subsequent builds via cache
+    "declaration": true, // Automatically generates .d.ts files
+    "declarationMap": true, // Maps errors/definitions back to source .ts files
+    "incremental": true // Speeds up subsequent builds via cache
   },
   "types": [
-      "jest",
-      "node"
-    ],
+    "jest",
+    "node"
+  ],
   "references": [
     {
-    "path": "./packages/harness"
-  },
+      "path": "./packages/harness"
+    },
     {
-    "path": "./packages/infra"
-  },
-],
-  "exclude": ["node_modules"],
+      "path": "./packages/infra"
+    },
+    {
+      "path": "./packages/core"
+    },
+  ],
+  "exclude": [
+    "node_modules"
+  ],
   "files": []
 }
