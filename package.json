@@ -1,0 +1,26 @@
+{
+  "name": "agent-lab",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "private": "true",
+  "main": "index.js",
+  "scripts": {
+    "build": "",
+    "test" : "",
+    "eval": "",
+    "loadtest" : ""
+  },
+  "workspaces": [
+    "packages/infra",
+    "packages/harness",
+    "packages/core",
+    "packages/mcp-github",
+    "packages/pipeline"
+  ],
+  "devDependencies": {
+    "@tsconfig/node24": "^24.0.5",
+    "@types/node": "^26.6.5",
+    "typescript": "^7.0.2"
+  }
+}
