@@ -6,10 +6,10 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "build": "",
-    "test" : "",
+    "build": "npm run build --workspaces",
+    "test": "",
     "eval": "",
-    "loadtest" : ""
+    "loadtest": ""
   },
   "workspaces": [
     "packages/infra",
@@ -20,6 +20,7 @@
   ],
   "devDependencies": {
     "@tsconfig/node24": "^24.0.5",
+    "@types/jest": "^30.0.0",
     "@types/node": "^26.6.5",
     "typescript": "^7.0.2"
   }

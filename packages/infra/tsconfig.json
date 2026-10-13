@@ -24,15 +24,16 @@
     "typeRoots": [
       "./node_modules/@types"
     ],
-    "noEmit": true,
     "isolatedModules": true,
-    "types": [
-      "jest",
-      "node"
-    ]
+    "types": ["node"],
+    "outDir": "./dist",
+    "rootDir": ".",
+    "composite": true
   },
+  "include": ["bin", "lib" ],
   "exclude": [
     "node_modules",
-    "cdk.out"
+    "cdk.out",
+    "dist"
   ]
 }
