@@ -9,6 +9,8 @@ export class GuardrailsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
+    const a = 'he;lo'
+
     // SNS
     const emailAddress = new cdk.CfnParameter(this, 'email-param');
     const smsNumber = new cdk.CfnParameter(this, 'sms-param');

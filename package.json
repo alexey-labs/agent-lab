@@ -1,9 +1,9 @@
 {
   "name": "agent-lab",
   "version": "1.0.0",
-  "description": "",
+  "description": "Agent Harness Practice in Cloud",
   "type": "module",
-  "private": "true",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "build": "",

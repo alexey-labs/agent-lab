@@ -1,11 +1,16 @@
+
 {
   "extends": "@tsconfig/node24/tsconfig.json",
   "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "sourceMap": true,
     "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true
+    "exactOptionalPropertyTypes": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "allowUnusedLabels": false,
+    "noFallthroughCasesInSwitch": true,
+    "allowUnreachableCode": false,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitOverride": true,
+    "noErrorTruncation": true,
   },
-  "include": ["src"]
 }
