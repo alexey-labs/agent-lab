@@ -9,7 +9,8 @@
     "build": "npm run build --workspaces",
     "test": "",
     "eval": "",
-    "loadtest": ""
+    "loadtest": "",
+    "clean": "rm -rf node_modules"
   },
   "workspaces": [
     "packages/infra",

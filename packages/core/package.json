@@ -1,5 +1,5 @@
 {
-  "name": "core",
+  "name": "@agent-lab/core",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -9,5 +9,11 @@
   "type": "module",
   "devDependencies": {
     "@types/node": "^26.6.5"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/env-config.d.ts",
+      "import": "./dist/env-config.js"
+    }
   }
 }

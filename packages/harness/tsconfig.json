@@ -6,5 +6,7 @@
     "sourceMap": true,
     "composite": true
   },
-  "include": ["src/**/*"],
+  "include": [
+    "src/**/*"
+  ],
 }

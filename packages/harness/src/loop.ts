@@ -1,18 +1,18 @@
 
 
-// # TOOLS
-const TOOL_REGISTRY = {
-  read_file: "",
-  list_file: "",
-  edit_file: "",
-};
+// /** TOOLS */
+// const TOOL_REGISTRY = {
+//   read_file: "",
+//   list_file: "",
+//   edit_file: "",
+// };
 
-function extractToolInvocation() { }
+// function extractToolInvocation() { }
 
-// # LLM
+// /** LLM */
 
-function executeLlmCall() { }
+// function executeLlmCall() { }
 
-// # LOOP
+// /** AGENT LOOP */
 
-function runCodingAgentLoop() { }
+// function runCodingAgentLoop() { }

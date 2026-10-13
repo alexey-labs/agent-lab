@@ -1,5 +1,5 @@
 {
-  "name": "harness",
+  "name": "@agent-lab/harness",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -13,8 +13,9 @@
     "typescript": "^7.0.2"
   },
   "dependencies": {
+    "@agent-lab/core": "file:packages/core",
     "@anthropic-ai/sdk": "^0.133.0",
-    "zod": "^4.6.7",
-    "@agent-lab/core": "file:packages/core"
+    "dotenv": "^18.0.7",
+    "zod": "^4.6.7"
   }
 }
