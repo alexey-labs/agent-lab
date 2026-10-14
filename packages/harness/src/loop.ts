@@ -27,7 +27,12 @@ async function runCodingAgentLoop(messages: MessageParam[]): Promise<void> {
         console.log(`${ASSISTANT_COLOR}Using a tool:${RESET_COLOR} `, block.name, block.input);
         const tool = Object.values(TOOL_REGISTRY).find(t => t.name === block.name)
         if (!tool) {
-          throw new Error(`Unkown tool: ${block.name}`)
+          // Report the error back to the model instead of crashing the session.
+          messages.push({
+            role: 'user',
+            content: [{ type: "tool_result", tool_use_id: block.id, content: `Unknown tool: ${block.name}`, is_error: true }]
+          })
+          continue
         }
         const result = await callTool(tool, block.input)
         messages.push(
@@ -60,7 +65,11 @@ const history: MessageParam[] = []
 function prompt() {
   rl.question(`${YOU_COLOR}You:${RESET_COLOR} `, async (query: string) => {
     history.push({ role: "user", content: query })
-    await runCodingAgentLoop(history)
+    try {
+      await runCodingAgentLoop(history)
+    } catch (err) {
+      console.error(`${ASSISTANT_COLOR}Error:${RESET_COLOR} `, err instanceof Error ? err.message : err)
+    }
     console.log("\n")
     prompt()
   })
