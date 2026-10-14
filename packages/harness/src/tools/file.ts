@@ -11,7 +11,11 @@ function resolvePath(pathStr: string): string {
  * :param filename: The name of the file to read.
  * :return: The full content of the file. */
 export function readFile(path: string): string {
-  return fs.readFileSync(resolvePath(path), { encoding: "utf-8" });
+  try {
+    return fs.readFileSync(resolvePath(path), { encoding: "utf-8" });
+  } catch {
+    return 'Error: file is not found'
+  }
 }
 
 /**
