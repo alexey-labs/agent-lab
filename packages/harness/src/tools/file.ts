@@ -43,5 +43,26 @@ export function listFiles(path: string): string {
  */
 export function editFile(path: string, oldStr: string, newStr: string): string {
   console.log(path, oldStr, newStr)
-  return "hello"
+  const fullPath = resolvePath(path)
+  if (!oldStr) {
+    fs.writeFileSync(fullPath, newStr, { encoding: "utf-8" })
+    return JSON.stringify({
+      path: fullPath,
+      action: "Created file"
+    })
+  } else {
+    const original = readFile(fullPath)
+    if (!original.includes(oldStr)) {
+      return JSON.stringify({
+        path: fullPath,
+        action: "oldStr not found"
+      })
+    }
+    const edited = original.replace(oldStr, newStr);
+    fs.writeFileSync(fullPath, edited, { encoding: "utf-8" })
+    return JSON.stringify({
+      path: fullPath,
+      action: "Edited file"
+    })
+  }
 }
