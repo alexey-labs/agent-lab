@@ -6,14 +6,12 @@
     "build": "tsc"
   },
   "keywords": [],
-  "type": "module",
   "devDependencies": {
     "@types/node": "^26.6.5"
   },
+  "main": "dist/env-config.js",
+  "types": "dist/env-config.d.ts",
   "exports": {
-    ".": {
-      "types": "./dist/env-config.d.ts",
-      "import": "./dist/env-config.js"
-    }
+    ".": "./dist/env-config.js"
   }
 }

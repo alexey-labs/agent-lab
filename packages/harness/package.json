@@ -2,13 +2,13 @@
   "name": "@agent-lab/harness",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "loop.js",
   "scripts": {
     "watch": "tsc -w",
-    "build": "tsc"
+    "build": "tsc",
+    "type-check": "tsc --noEmit"
   },
   "keywords": [],
-  "type": "module",
   "devDependencies": {
     "typescript": "^7.0.2"
   },
