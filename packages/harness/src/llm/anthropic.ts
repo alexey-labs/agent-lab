@@ -1,15 +1,15 @@
 import "dotenv/config";
 import { getEnvOrFail } from "@agent-lab/core";
 import Anthropic from "@anthropic-ai/sdk";
-import { Tool, TOOL_REGISTRY } from "../tools/registry";
-import { z } from "zod";
 import { MessageParam } from "@anthropic-ai/sdk/resources";
+import { z } from "zod";
+import { callTool, Tool, TOOL_REGISTRY } from "../tools/registry";
 import { placeholderStr, SYSTEM_PROMPT } from "./shared";
 
 
 const model = "claude-haiku-5-5"
 const client = new Anthropic({
-  apiKey: getEnvOrFail("ANTHROPIC_API_KEY") // This is the default and can be omitted
+  apiKey: getEnvOrFail("ANTHROPIC_API_KEY")
 });
 
 function toApiTool(tool: Tool<z.ZodObject>): Anthropic.Tool {
@@ -30,12 +30,25 @@ export async function chat(messages: MessageParam[]): Promise<string> {
   });
 
   for (const block of message.content) {
+    console.log("content: ", JSON.stringify(message.content, null, 2));
     if (block.type === "text") {
-      console.log(block.text);
+      return block.text;
     } else if (block.type === "tool_use") {
-      console.log("Want to use a tool: ", block.name);
+      console.log("Want to use a tool: ", block.name, block.input);
+
+      const tool = Object.values(TOOL_REGISTRY).find(t => t.name === block.name)
+      if (!tool) {
+        throw new Error(`Unkown tool: ${block.name}`)
+      }
+      const result = await callTool(tool, block.input)
+      console.log('result', result)
+      messages.push({
+        role: 'user',
+        content: result.trim()
+      })
+      await chat(messages)
     }
   }
 
-  return "adaw"
+  return ""
 }

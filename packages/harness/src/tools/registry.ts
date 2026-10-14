@@ -14,10 +14,15 @@ function createTool<T extends z.ZodObject<any>>(tool: Tool<T>) {
   return tool
 }
 
-// 3. Clean, type-safe registry
+// 3. Call tool
+export async function callTool(tool: Tool<z.ZodObject>, input: unknown) {
+  return await tool.func(tool.inputSchema.parse(input) as never)
+}
+
+// 4. Clean, type-safe registry
 export const TOOL_REGISTRY = {
   readFile: createTool({
-    name: "read_file",
+    name: "readFile",
     description: `Gets the full content of a file provided by the user.
     :param filename: The name of the file to read.
     :return: The full content of the file.`,
@@ -25,7 +30,7 @@ export const TOOL_REGISTRY = {
     func: async ({ filename }) => readFile(filename)
   }),
   listFile: createTool({
-    name: "list_files",
+    name: "listFiles",
     description: `Lists the files in a directory provided by the user.
     :param path: The path to the directory to list files from.
     :return: A list of files in the directory.`,
@@ -33,7 +38,7 @@ export const TOOL_REGISTRY = {
     func: async ({ path }) => listFiles(path)
   }),
   editFile: createTool({
-    name: "edit_file",
+    name: "editFile",
     description: `Replaces first occurrence of oldStr with newStr in file. If oldStr is empty, creates/overwrites file with newStr.
     :param path: The path to the file to edit.
     :param oldStr: The string to replace.

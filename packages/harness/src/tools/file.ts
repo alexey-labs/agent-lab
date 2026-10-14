@@ -2,35 +2,46 @@ import * as fs from "node:fs";
 import path from "node:path";
 
 
+/** resolve a path to absolute path */
 function resolvePath(pathStr: string): string {
-  let p = pathStr
-  if (!path.isAbsolute(p)) {
-    p = path.resolve(process.cwd(), p);
-  }
-  return p;
+  return !path.isAbsolute(pathStr) ? pathStr : path.resolve(process.cwd(), pathStr)
 }
 
+/** Gets the full content of a file provided by the user.
+ * :param filename: The name of the file to read.
+ * :return: The full content of the file. */
 export function readFile(path: string): string {
-  const fileContent = fs.readFileSync(resolvePath(path), { encoding: "utf-8" });
-  return fileContent
+  return fs.readFileSync(resolvePath(path), { encoding: "utf-8" });
 }
 
-export function listFiles(path: string): Array<string> {
+/**
+ * Lists the files in a directory provided by the user.
+ * @param path The path to the directory to list files from
+ * @returns A list of files in the directory as a string
+ */
+export function listFiles(path: string): string {
   const fullPath = resolvePath(path)
-  const result: string[] = []
+  const result: { filename: string, type: 'file' | 'dir' }[] = []
   if (fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory()) {
     const files = fs.readdirSync(fullPath)
     for (const file of files) {
-      if (fs.lstatSync(file).isFile()) {
-        result.push(file)
-      }
+      result.push({
+        filename: file,
+        type: fs.lstatSync(fullPath + '/' + file).isFile() ? 'file' : 'dir'
+      })
     }
-    return files;
-  };
-  return result
+  }
+  return JSON.stringify(result)
 }
 
-export function editFile(path: string, oldStr: string, newStr: string) {
+/**
+ * Replaces first occurrence of oldStr with newStr in file. If oldStr is empty, creates/overwrites file with newStr.
+ * @param path The path to the file to edit
+ * @param oldStr The string to replace
+ * @param newStr The string to replace with
+ * @returns A dictionary with the path to the file and the action taken
+ */
+export function editFile(path: string, oldStr: string, newStr: string): string {
   console.log(path, oldStr, newStr)
   return "hello"
 }
