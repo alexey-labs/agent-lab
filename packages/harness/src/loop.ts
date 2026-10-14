@@ -26,7 +26,7 @@ async function runCodingAgentLoop(messages: MessageParam[], maxSteps: number = 2
     for (const block of resp.content) {
       if (block.type === "tool_use") {
         console.log(`${ASSISTANT_COLOR}Using a tool:${RESET_COLOR} `, block.name, block.input);
-        const tool = Object.values(TOOL_REGISTRY).find(t => t.name === block.name)
+        const tool = TOOL_REGISTRY[block.name as keyof typeof TOOL_REGISTRY]
         if (!tool) {
           // Report the error back to the model instead of crashing the session.
           toolResults.push({ type: "tool_result", tool_use_id: block.id, content: `Unknown tool: ${block.name}`, is_error: true })

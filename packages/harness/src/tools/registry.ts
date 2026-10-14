@@ -29,7 +29,7 @@ export const TOOL_REGISTRY = {
     inputSchema: z.object({ filename: z.string().describe("The name of the file to read") }),
     func: async ({ filename }) => readFile(filename)
   }),
-  listFile: createTool({
+  listFiles: createTool({
     name: "listFiles",
     description: `Lists the files in a directory provided by the user.
     :param path: The path to the directory to list files from.
