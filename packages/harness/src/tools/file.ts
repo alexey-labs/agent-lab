@@ -60,8 +60,12 @@ export function editFile(path: string, oldStr: string, newStr: string): Record<s
     if (!original.includes(oldStr)) {
       return {
         path: fullPath,
-        action: "oldStr not found"
+        action: "NOT_FOUND"
       }
+    }
+    const occurrences = original.split(oldStr).length - 1
+    if (occurrences > 1) {
+      return { path: fullPath, action: "AMBIGUOUS - found multiple matches" }
     }
     const edited = original.replace(oldStr, () => newStr);
     fs.writeFileSync(fullPath, edited, { encoding: "utf-8" })

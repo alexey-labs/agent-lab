@@ -6,7 +6,8 @@
   "scripts": {
     "watch": "tsc -w",
     "build": "tsc",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "harness": "node dist/loop.js"
   },
   "keywords": [],
   "devDependencies": {
