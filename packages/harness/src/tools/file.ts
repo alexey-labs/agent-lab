@@ -17,7 +17,7 @@ export function readFile(path: string): string {
   }
 }
 
-type ListFiles = { filename: string, type: 'file' | 'dir' }
+type ListFiles = { filename: string, type?: 'file' | 'dir' }
 /**
  * Lists the files in a directory provided by the user.
  * @param path The path to the directory to list files from
@@ -35,7 +35,9 @@ export function listFiles(path: string): Array<ListFiles> {
       })
     }
   }
-  return result
+  return result.length > 0 ? result : [{
+    filename: 'No files found'
+  }]
 }
 
 /**
@@ -46,7 +48,6 @@ export function listFiles(path: string): Array<ListFiles> {
  * @returns A dictionary with the path to the file and the action taken
  */
 export function editFile(path: string, oldStr: string, newStr: string): Record<string, any> {
-  console.log(path, oldStr, newStr)
   const fullPath = resolvePath(path)
   if (!oldStr) {
     fs.writeFileSync(fullPath, newStr, { encoding: "utf-8" })

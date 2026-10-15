@@ -1,5 +1,4 @@
 export function getEnv(key: string): string | undefined {
-  console.log("getEnv")
   return process.env[key];
 }
 

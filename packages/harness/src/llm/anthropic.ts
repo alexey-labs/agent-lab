@@ -3,7 +3,7 @@ import { getEnvOrFail } from "@agent-lab/core";
 import Anthropic from "@anthropic-ai/sdk";
 import { MessageParam } from "@anthropic-ai/sdk/resources";
 import { z } from "zod";
-import { Tool, TOOL_REGISTRY } from "../tools/registry";
+import { Tool, TOOL_REGISTRY } from "../tools/tool-registry";
 import { SYSTEM_PROMPT } from "./shared";
 
 

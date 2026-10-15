@@ -3,3 +3,5 @@ node_modules
 .env
 # Build cache manifests
 *.tsbuildinfo
+
+trace.jsonl
