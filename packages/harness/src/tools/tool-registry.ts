@@ -75,13 +75,18 @@ export const TOOL_REGISTRY = {
       if (FORBIDDEN_COMMANDS.some(cmd => command.includes(cmd))) {
         throw new Error(`Command ${command} is forbidden`)
       }
-      const result = spawnSync("sh", ["-c", command], { cwd: process.cwd(), encoding: "utf-8", timeout: 20000 })
-      if (result.status !== 0) {
-        throw new Error(`Command ${command} failed with status ${result.status}: ${result.stderr.toString()}`)
+      const result = spawnSync("sh", ["-c", command], { cwd: process.cwd(), encoding: "utf-8", timeout: 20000, maxBuffer: 64 * 1024 * 1024 })
+      // Non-zero exits are normal tool output (e.g. failing tests), not errors.
+      // A timeout is reported via `result.error` with code ETIMEDOUT; the child is killed, so status is null.
+      const timedOut = (result.error as NodeJS.ErrnoException | undefined)?.code === "ETIMEDOUT"
+      if (result.error && !timedOut) {
+        throw new Error(`Command ${command} could not run: ${result.error.message}`)
       }
       return {
-        output: result.stdout.toString(),
-        error: result.stderr.toString(),
+        exitCode: result.status,
+        stdout: result.stdout ?? "",
+        stderr: result.stderr ?? "",
+        timedOut,
       }
     }
   }),
