@@ -15,8 +15,9 @@ function createTool<T extends z.ZodObject<any>>(tool: Tool<T>) {
 }
 
 // 3. Call tool
-export async function callTool(tool: Tool<z.ZodObject>, input: unknown) {
-  return await tool.func(tool.inputSchema.parse(input) as never)
+export async function callTool(tool: Tool<z.ZodObject>, input: unknown): Promise<string> {
+  const result = await tool.func(tool.inputSchema.parse(input) as never)
+  return JSON.stringify(result)
 }
 
 // 4. Clean, type-safe registry

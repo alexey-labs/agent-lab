@@ -4,7 +4,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { MessageParam } from "@anthropic-ai/sdk/resources";
 import { z } from "zod";
 import { Tool, TOOL_REGISTRY } from "../tools/registry";
-import { placeholderStr, SYSTEM_PROMPT } from "./shared";
+import { SYSTEM_PROMPT } from "./shared";
 
 
 const model = "claude-haiku-5-5"
@@ -22,7 +22,7 @@ function toApiTool(tool: Tool<z.ZodObject>): Anthropic.Tool {
 
 export async function chat(messages: MessageParam[]): Promise<Anthropic.Messages.Message> {
   return await client.messages.create({
-    system: SYSTEM_PROMPT.replace(placeholderStr, Object.values(TOOL_REGISTRY).map(tool => `TOOL: ===\n ${tool.name}\n${tool.description}`).join()),
+    system: SYSTEM_PROMPT,
     messages,
     model,
     max_tokens: 2000,

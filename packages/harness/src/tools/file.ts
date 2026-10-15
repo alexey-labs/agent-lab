@@ -1,10 +1,9 @@
 import * as fs from "node:fs";
 import path from "node:path";
 
-
 /** resolve a path to absolute path */
 function resolvePath(pathStr: string): string {
-  return !path.isAbsolute(pathStr) ? pathStr : path.resolve(process.cwd(), pathStr)
+  return path.isAbsolute(pathStr) ? pathStr : path.resolve(process.cwd(), pathStr)
 }
 
 /** Gets the full content of a file provided by the user.
@@ -18,14 +17,15 @@ export function readFile(path: string): string {
   }
 }
 
+type ListFiles = { filename: string, type: 'file' | 'dir' }
 /**
  * Lists the files in a directory provided by the user.
  * @param path The path to the directory to list files from
  * @returns A list of files in the directory as a string
  */
-export function listFiles(path: string): string {
+export function listFiles(path: string): Array<ListFiles> {
   const fullPath = resolvePath(path)
-  const result: { filename: string, type: 'file' | 'dir' }[] = []
+  const result: ListFiles[] = []
   if (fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory()) {
     const files = fs.readdirSync(fullPath)
     for (const file of files) {
@@ -35,7 +35,7 @@ export function listFiles(path: string): string {
       })
     }
   }
-  return JSON.stringify(result)
+  return result
 }
 
 /**
@@ -45,28 +45,28 @@ export function listFiles(path: string): string {
  * @param newStr The string to replace with
  * @returns A dictionary with the path to the file and the action taken
  */
-export function editFile(path: string, oldStr: string, newStr: string): string {
+export function editFile(path: string, oldStr: string, newStr: string): Record<string, any> {
   console.log(path, oldStr, newStr)
   const fullPath = resolvePath(path)
   if (!oldStr) {
     fs.writeFileSync(fullPath, newStr, { encoding: "utf-8" })
-    return JSON.stringify({
+    return {
       path: fullPath,
       action: "Created file"
-    })
+    }
   } else {
     const original = readFile(fullPath)
     if (!original.includes(oldStr)) {
-      return JSON.stringify({
+      return {
         path: fullPath,
         action: "oldStr not found"
-      })
+      }
     }
-    const edited = original.replace(oldStr, newStr);
+    const edited = original.replace(oldStr, () => newStr);
     fs.writeFileSync(fullPath, edited, { encoding: "utf-8" })
-    return JSON.stringify({
+    return {
       path: fullPath,
       action: "Edited file"
-    })
+    }
   }
 }
