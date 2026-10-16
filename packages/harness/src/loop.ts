@@ -48,7 +48,7 @@ async function runCodingAgentLoop(messages: MessageParam[], maxSteps: number = 5
           continue
         }
         try {
-          const result = await callTool(tool, block.input)
+          const result = await callTool(tool, block.input, { root: process.cwd() })
           toolResults.push({ type: "tool_result", tool_use_id: block.id, content: result })
           toolTraces.push({ name: block.name, input: block.input, output_length: result.length, is_error: false })
         } catch (e) {

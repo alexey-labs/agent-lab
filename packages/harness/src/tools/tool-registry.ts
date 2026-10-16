@@ -20,7 +20,19 @@ function createTool<T extends z.ZodObject<any>>(tool: Tool<T>) {
 // 3. Call tool
 export async function callTool(tool: Tool<z.ZodObject>, input: unknown, ctx: ToolCtx): Promise<string> {
   const result = await tool.func(tool.inputSchema.parse(input) as never, ctx)
-  return typeof result === 'string' ? result : JSON.stringify(result)
+  return capOutput(typeof result === 'string' ? result : JSON.stringify(result))
+}
+
+// Output caps: every tool result goes through capOutput(text, 8000): keep
+// head and tail, insert[truncated 12345 chars; narrow your query].
+// The hint teaches the model to self - correct.
+export function capOutput(text: string, maxChars: number = 8000) {
+  if (text.length <= maxChars) return text;
+  const halfChars = Math.floor((maxChars - 100) / 2);
+  const head = text.slice(0, halfChars);
+  const tail = text.slice(-halfChars, text.length)
+  const truncatedText = `[truncated ${text.length - halfChars * 2} chars..., narrow your query]`
+  return `${head}\n ${truncatedText}\n ${tail}`
 }
 
 const GREP_MAX_RESULTS = 50
@@ -73,11 +85,11 @@ export const TOOL_REGISTRY = {
     :param command: The bash command to execute.
     :return: The output of the command.`,
     inputSchema: z.object({ command: z.string().describe("The bash command to execute") }),
-    func: async ({ command }) => {
+    func: async ({ command }, ctx) => {
       if (FORBIDDEN_COMMANDS.some(cmd => command.includes(cmd))) {
         throw new Error(`Command ${command} is forbidden`)
       }
-      const result = spawnSync("sh", ["-c", command], { cwd: process.cwd(), encoding: "utf-8", timeout: 20000, maxBuffer: 64 * 1024 * 1024 })
+      const result = spawnSync("sh", ["-c", command], { cwd: ctx.root, encoding: "utf-8", timeout: 20000, maxBuffer: 64 * 1024 * 1024 })
       // Non-zero exits are normal tool output (e.g. failing tests), not errors.
       // A timeout is reported via `result.error` with code ETIMEDOUT; the child is killed, so status is null.
       const timedOut = (result.error as NodeJS.ErrnoException | undefined)?.code === "ETIMEDOUT"
@@ -86,8 +98,8 @@ export const TOOL_REGISTRY = {
       }
       return {
         exitCode: result.status,
-        stdout: result.stdout ?? "",
-        stderr: result.stderr ?? "",
+        stdout: capOutput(result.stdout ?? ""),
+        stderr: capOutput(result.stderr ?? "", 2000),
         timedOut,
       }
     }
@@ -99,12 +111,12 @@ export const TOOL_REGISTRY = {
     :param string: The string to search for.
     :return: The lines containing the string.`,
     inputSchema: z.object({ file: z.string().describe("The file to search in"), string: z.string().describe("The string to search for") }),
-    func: async ({ file, string }) => {
+    func: async ({ file, string }, ctx) => {
       // ripgrep exit codes: 0 = matches, 1 = no matches, 2 = error
       const result = spawnSync(
         "rg",
         ["--fixed-strings", "--vimgrep", "--color", "never", "--", string, file],
-        { cwd: process.cwd(), encoding: "utf-8", timeout: 20000, maxBuffer: 64 * 1024 * 1024 }
+        { cwd: ctx.root, encoding: "utf-8", timeout: 20000, maxBuffer: 64 * 1024 * 1024 }
       )
       if (result.error) {
         throw new Error(`rg failed to run: ${result.error.message}`)
