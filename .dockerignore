@@ -10,3 +10,4 @@ cdk.out
 .git
 *.log
 **/*.tsbuildinfo
+**/cdk.out

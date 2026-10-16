@@ -2,7 +2,7 @@
   "name": "@agent-lab/harness",
   "version": "1.0.0",
   "description": "",
-  "main": "loop.js",
+  "main": "dist/run-task.js",
   "scripts": {
     "watch": "tsc -w",
     "build": "tsc",
@@ -19,5 +19,9 @@
     "@anthropic-ai/sdk": "^0.133.0",
     "dotenv": "^18.0.7",
     "zod": "^4.6.7"
+  },
+  "types": "dist/run-task.d.ts",
+  "exports": {
+    ".": "./dist/run-task.js"
   }
 }

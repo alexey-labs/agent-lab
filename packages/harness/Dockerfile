@@ -24,4 +24,4 @@ WORKDIR /workspace
 
 # Setup an app user so the container doesn't run as the root user
 USER node
-CMD ["node", "/app/packages/harness/dist/run-task.js"]
+CMD ["node", "/app/packages/harness/dist/cli.js"]

@@ -15,7 +15,8 @@
     "packages/harness",
     "packages/core",
     "packages/mcp-github",
-    "packages/pipeline"
+    "packages/pipeline",
+    "packages/lambda"
   ],
   "devDependencies": {
     "@swc/core": "^1.16.18",

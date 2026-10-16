@@ -1,7 +1,8 @@
 import { appendFileSync } from "node:fs";
+import { getEnv } from "@agent-lab/core"
 
 // Trace log file (JSONL: one JSON object per line), written in the current working directory.
-const TRACE_PATH = "trace.jsonl";
+const TRACE_PATH = getEnv("TRACE_PATH") ?? "trace.jsonl"
 
 export interface ToolTrace {
   name: string;

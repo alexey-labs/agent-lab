@@ -8,9 +8,9 @@ import { SecretsStack } from '../lib/secrets-stack';
 
 const app = new cdk.App();
 
-new SecretsStack(app, 'SecretsStack')
+const secrets = new SecretsStack(app, 'SecretsStack')
 new GuardrailsStack(app, 'GuardrailsStack')
-new HarnessStack(app, 'HarnessStack');
+new HarnessStack(app, 'HarnessStack', { anthropicApi: secrets.anthropicApi.secretValue.unsafeUnwrap() });
 new PipelineStack(app, 'PipelineStack')
 
 Tags.of(app).add('project', 'agent-lab');
