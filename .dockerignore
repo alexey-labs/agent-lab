@@ -1,0 +1,12 @@
+**/node_modules
+**/dist
+**/__tests__
+**/.env
+**/.env.*
+**/trace.jsonl
+cdk.out
+.env
+.env.*
+.git
+*.log
+**/*.tsbuildinfo
