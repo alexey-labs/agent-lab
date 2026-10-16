@@ -2,12 +2,14 @@ import { z } from "zod"
 import { editFile, listFiles, readFile } from "./file";
 import { spawnSync } from "node:child_process";
 
+export type ToolCtx = { root: string };
+
 // 1. The definition links the Zod Schema to the function argument type
 export interface Tool<TSchema extends z.ZodObject<any>> {
   name: string
   description: string,
   inputSchema: TSchema,
-  func: (args: z.infer<TSchema>) => Promise<any> | any
+  func: (args: z.infer<TSchema>, ctx: ToolCtx) => Promise<any> | any
 }
 
 // 2. Simple helper for clean type inference
@@ -16,8 +18,8 @@ function createTool<T extends z.ZodObject<any>>(tool: Tool<T>) {
 }
 
 // 3. Call tool
-export async function callTool(tool: Tool<z.ZodObject>, input: unknown): Promise<string> {
-  const result = await tool.func(tool.inputSchema.parse(input) as never)
+export async function callTool(tool: Tool<z.ZodObject>, input: unknown, ctx: ToolCtx): Promise<string> {
+  const result = await tool.func(tool.inputSchema.parse(input) as never, ctx)
   return typeof result === 'string' ? result : JSON.stringify(result)
 }
 
@@ -41,7 +43,7 @@ export const TOOL_REGISTRY = {
     :param filename: The name of the file to read.
     :return: The full content of the file.`,
     inputSchema: z.object({ filename: z.string().describe("The name of the file to read") }),
-    func: async ({ filename }) => readFile(filename)
+    func: async ({ filename }, ctx) => readFile(ctx.root, filename)
   }),
   listFiles: createTool({
     name: "listFiles",
@@ -49,7 +51,7 @@ export const TOOL_REGISTRY = {
     :param path: The path to the directory to list files from.
     :return: A list of files in the directory.`,
     inputSchema: z.object({ path: z.string().describe("The path to the directory to list files from") }),
-    func: async ({ path }) => listFiles(path)
+    func: async ({ path }, ctx) => listFiles(ctx.root, path)
   }),
   editFile: createTool({
     name: "editFile",
@@ -63,7 +65,7 @@ export const TOOL_REGISTRY = {
       oldStr: z.string().describe("The string to replace"),
       newStr: z.string().describe("The string to replace with"),
     }),
-    func: async ({ path, oldStr, newStr }) => editFile(path, oldStr, newStr)
+    func: async ({ path, oldStr, newStr }, ctx) => editFile(ctx.root, path, oldStr, newStr)
   }),
   bash: createTool({
     name: "bash",

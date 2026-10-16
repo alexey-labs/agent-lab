@@ -13,12 +13,12 @@
     "noErrorTruncation": true,
     "declaration": true, // Automatically generates .d.ts files
     "declarationMap": true, // Maps errors/definitions back to source .ts files
-    "incremental": true // Speeds up subsequent builds via cache
+    "incremental": true, // Speeds up subsequent builds via cache
+    "types": [
+      "jest",
+      "node"
+    ]
   },
-  "types": [
-    "jest",
-    "node"
-  ],
   "references": [
     {
       "path": "./packages/harness"
