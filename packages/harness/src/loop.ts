@@ -47,13 +47,13 @@ async function runCodingAgentLoop(messages: MessageParam[], maxSteps: number = 5
           toolTraces.push({ name: block.name, input: block.input, output_length: `Unknown tool: ${block.name}`.length, is_error: true })
           continue
         }
-        try {
-          const result = await callTool(tool, block.input, { root: process.cwd() })
-          toolResults.push({ type: "tool_result", tool_use_id: block.id, content: result })
-          toolTraces.push({ name: block.name, input: block.input, output_length: result.length, is_error: false })
-        } catch (e) {
-          toolResults.push({ type: "tool_result", tool_use_id: block.id, content: `${e instanceof Error ? e.message : e}`, is_error: true })
-          toolTraces.push({ name: block.name, input: block.input, output_length: 0, is_error: true })
+        const result = await callTool(tool, block.input, { root: process.cwd() })
+        if (result.ok) {
+          toolResults.push({ type: "tool_result", tool_use_id: block.id, content: result.data })
+          toolTraces.push({ name: block.name, input: block.input, output_length: result.data.length, is_error: !result.ok })
+        } else {
+          toolResults.push({ type: "tool_result", tool_use_id: block.id, content: `${result.error.code}: ${result.error.message}`, is_error: true })
+          toolTraces.push({ name: block.name, input: block.input, output_length: 0, is_error: !result.ok })
         }
       }
     }

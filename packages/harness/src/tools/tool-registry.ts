@@ -1,8 +1,11 @@
-import { z } from "zod"
-import { editFile, listFiles, readFile } from "./file";
 import { spawnSync } from "node:child_process";
+import { z } from "zod";
+import { editFile, listFiles, readFile } from "./file";
 
 export type ToolCtx = { root: string };
+type ToolReturnSucess = { ok: true, data: any }
+type ToolReturnFail = { ok: false, error: { code: string, message: string, retryable: boolean, hint: string } }
+export type ToolReturn = ToolReturnSucess | ToolReturnFail
 
 // 1. The definition links the Zod Schema to the function argument type
 export interface Tool<TSchema extends z.ZodObject<any>> {
@@ -18,9 +21,14 @@ function createTool<T extends z.ZodObject<any>>(tool: Tool<T>) {
 }
 
 // 3. Call tool
-export async function callTool(tool: Tool<z.ZodObject>, input: unknown, ctx: ToolCtx): Promise<string> {
-  const result = await tool.func(tool.inputSchema.parse(input) as never, ctx)
-  return capOutput(typeof result === 'string' ? result : JSON.stringify(result))
+export async function callTool(tool: Tool<z.ZodObject>, input: unknown, ctx: ToolCtx): Promise<ToolReturn> {
+  try {
+    const result = await tool.func(tool.inputSchema.parse(input) as never, ctx)
+    const capped = capOutput(typeof result === 'string' ? result : JSON.stringify(result))
+    return { ok: true, data: capped }
+  } catch (error: any) {
+    return { ok: false, error: { code: error.code || "unknown", message: error.message, retryable: false, hint: "" } }
+  }
 }
 
 // Output caps: every tool result goes through capOutput(text, 8000): keep

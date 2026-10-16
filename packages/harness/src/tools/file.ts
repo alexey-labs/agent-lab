@@ -26,11 +26,7 @@ export function resolveInRoot(root: string, p: string): string {
  * :param filename: The name of the file to read.
  * :return: The full content of the file. */
 export function readFile(root: string, path: string): string {
-  try {
-    return fs.readFileSync(resolveInRoot(root, path), { encoding: "utf-8" });
-  } catch (error: any) {
-    return `Error: file is not found: ${JSON.stringify(error)}`
-  }
+  return fs.readFileSync(resolveInRoot(root, path), { encoding: "utf-8" });
 }
 
 type ListFiles = { filename: string, type?: 'file' | 'dir' }
@@ -51,9 +47,7 @@ export function listFiles(root: string, path: string): Array<ListFiles> {
       })
     }
   }
-  return result.length > 0 ? result : [{
-    filename: 'No files found'
-  }]
+  return result
 }
 
 /**
